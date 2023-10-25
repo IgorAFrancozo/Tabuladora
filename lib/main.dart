@@ -31,7 +31,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       double numero = double.parse(input);
       double resultado = sqrt(numero);
       String operacao = '√$input';
-      String resposta = '$operacao = $resultado';
+      String resposta = '\n$operacao = $resultado';
       setState(() {
         _historico.insert(0, resposta);
         _controller.text = '';
@@ -50,7 +50,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       ContextModel contexto = ContextModel();
       double resultado = expressaoFinal.evaluate(EvaluationType.REAL, contexto);
       String operacao = input;
-      String resposta = '$operacao = $resultado';
+      String resposta = '\n$operacao = $resultado';
       setState(() {
         _historico.insert(0, resposta);
         _controller.text = '';
@@ -61,7 +61,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   void _calcularTabuada(String input) {
     if (input.isNotEmpty) {
       double numero = double.parse(input);
-      String operacao = 'Tabuada do nº $input:';
+      String operacao = '\nTabuada do nº $input:\n';
       for (int i = 1; i <= 10; i++) {
         double resultado = numero * i;
         String linhaTabuada = '$numero x $i = $resultado';
@@ -85,15 +85,15 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            height: MediaQuery.of(context).size.height * 0.33,
+            height: MediaQuery.of(context).size.height * 0.36,
             padding: const EdgeInsets.all(16.0),
             child: ListView.builder(
               itemCount: _historico.length,
               itemBuilder: (BuildContext context, int index) {
                 return Text(
                   _historico[index],
-                  maxLines: 11,
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  maxLines: 14,
+                  style: const TextStyle(color: Colors.deepOrangeAccent, fontSize: 19),
                 );
               },
             ),
@@ -106,7 +106,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                   textAlign: TextAlign.center,
                   controller: _controller,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(color: Colors.white, fontSize: 20),
+                  style: const TextStyle(color: Colors.yellow, fontSize: 34, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -114,7 +114,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                     _buildButton('7'),
                     _buildButton('8'),
                     _buildButton('9'),
-                    _buildButton('÷', color: Colors.yellowAccent),
+                    _buildButton('÷', color: Colors.yellow.shade400),
                   ],
                 ),
                 Row(
@@ -123,7 +123,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                     _buildButton('4'),
                     _buildButton('5'),
                     _buildButton('6'),
-                    _buildButton('×', color: Colors.yellowAccent),
+                    _buildButton('×', color: Colors.yellow.shade400),
                   ],
                 ),
                 Row(
@@ -132,23 +132,23 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                     _buildButton('1'),
                     _buildButton('2'),
                     _buildButton('3'),
-                    _buildButton('-', color: Colors.yellowAccent),
+                    _buildButton('-', color: Colors.yellow.shade400),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
-                    _buildButton('C', color: Colors.redAccent),
+                    _buildButton('C', color: Colors.deepOrangeAccent),
                     _buildButton('0'),
-                    _buildButton('=', color: Colors.yellowAccent),
-                    _buildButton('+', color: Colors.yellowAccent),
+                    _buildButton('=', color: Colors.deepOrangeAccent),
+                    _buildButton('+', color: Colors.yellow.shade400),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildButton('-={ Tabuada }=-', color: Colors.yellowAccent),
-                    _buildButton('√x', color: Colors.yellowAccent)
+                    _buildButton('-={ Tabular }=-', color: Colors.yellow.shade400),
+                    _buildButton('√x', color: Colors.yellow.shade400)
                   ],
                 )
               ],
@@ -166,7 +166,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           _calcularOperacao(_controller.text);
         } else if (text == 'C') {
           _controller.clear();
-        } else if (text == '-={ Tabuada }=-') {
+        } else if (text == '-={ Tabular }=-') {
           _calcularTabuada(_controller.text);
         } else if (text == '√x') {
           _calcularRaizQuadrada(_controller.text);
@@ -177,11 +177,11 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       style: ElevatedButton.styleFrom(
         primary: color,
         onPrimary: Colors.black,
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.fromLTRB(34, 7, 34, 7),
       ),
       child: Text(
         text,
-        style: TextStyle(fontSize: 22),
+        style: const TextStyle(fontSize: 25),
       ),
     );
   }
