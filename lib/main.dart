@@ -2,9 +2,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
-void main() => runApp(TabuladoraApp());
+void main() => runApp(const TabuladoraApp());
 
 class TabuladoraApp extends StatelessWidget {
+  const TabuladoraApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,19 +14,21 @@ class TabuladoraApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.yellow,
       ),
-      home: CalculadoraScreen(),
+      home: const CalculadoraScreen(),
     );
   }
 }
 
 class CalculadoraScreen extends StatefulWidget {
+  const CalculadoraScreen({super.key});
+
   @override
   _CalculadoraScreenState createState() => _CalculadoraScreenState();
 }
 
 class _CalculadoraScreenState extends State<CalculadoraScreen> {
-  TextEditingController _controller = TextEditingController();
-  List<String> _historico = [];
+  final TextEditingController _controller = TextEditingController();
+  final List<String> _historico = [];
 
   void _calcularRaizQuadrada(String input) {
     if (input.isNotEmpty) {
@@ -77,16 +81,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tabuladora'),
-      ),
       backgroundColor: Colors.black,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
-            height: MediaQuery.of(context).size.height * 0.36,
-            padding: const EdgeInsets.all(16.0),
+            height: MediaQuery.of(context).size.height * 0.43,
+            padding: const EdgeInsets.all(7),
             child: ListView.builder(
               itemCount: _historico.length,
               itemBuilder: (BuildContext context, int index) {
@@ -106,7 +107,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                   textAlign: TextAlign.center,
                   controller: _controller,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(color: Colors.yellow, fontSize: 34, fontWeight: FontWeight.bold),
+                  style: const TextStyle(color: Colors.yellowAccent, fontSize: 34, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -114,7 +115,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                     _buildButton('7'),
                     _buildButton('8'),
                     _buildButton('9'),
-                    _buildButton('÷', color: Colors.yellow.shade400),
+                    _buildButton('÷', color: Colors.yellowAccent),
                   ],
                 ),
                 Row(
@@ -123,7 +124,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                     _buildButton('4'),
                     _buildButton('5'),
                     _buildButton('6'),
-                    _buildButton('×', color: Colors.yellow.shade400),
+                    _buildButton('×', color: Colors.yellowAccent),
                   ],
                 ),
                 Row(
@@ -132,7 +133,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                     _buildButton('1'),
                     _buildButton('2'),
                     _buildButton('3'),
-                    _buildButton('-', color: Colors.yellow.shade400),
+                    _buildButton('-', color: Colors.yellowAccent),
                   ],
                 ),
                 Row(
@@ -141,14 +142,14 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                     _buildButton('C', color: Colors.deepOrangeAccent),
                     _buildButton('0'),
                     _buildButton('=', color: Colors.deepOrangeAccent),
-                    _buildButton('+', color: Colors.yellow.shade400),
+                    _buildButton('+', color: Colors.yellowAccent),
                   ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildButton('-={ Tabular }=-', color: Colors.yellow.shade400),
-                    _buildButton('√x', color: Colors.yellow.shade400)
+                    _buildButton('-={ Tabular }=-', color: Colors.yellowAccent),
+                    _buildButton('√x', color: Colors.yellowAccent)
                   ],
                 )
               ],
@@ -161,6 +162,13 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
 
   Widget _buildButton(String text, {Color color = Colors.white}) {
     return ElevatedButton(
+      onLongPress: () {
+        if (text == 'C') {
+          setState(() {
+            _historico.clear();
+          });
+        }
+      },
       onPressed: () {
         if (text == '=') {
           _calcularOperacao(_controller.text);
@@ -175,8 +183,6 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         }
       },
       style: ElevatedButton.styleFrom(
-        primary: color,
-        onPrimary: Colors.black,
         padding: const EdgeInsets.fromLTRB(34, 7, 34, 7),
       ),
       child: Text(
