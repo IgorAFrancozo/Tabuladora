@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 
@@ -44,17 +45,28 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
   }
 
   void _calcularOperacao(String input) {
+    String operacao = input;
+
     if (input.isNotEmpty) {
+      input =
+          operacao.replaceAllMapped(RegExp(r'(\d+)([+*/-]-*[\d.]+)%'), (match) {
+        double valor = double.parse(match.group(1) ?? '0');
+        double percentual = double.parse(match.group(2) ?? '0') * 0.01;
+        double resultado = valor * (1 + percentual);
+        return resultado.toString();
+      });
+
       String expressao = input
           .replaceAll('×', '*')
           .replaceAll('÷', '/')
           .replaceAll('√x', 'sqrt(');
+
       Parser parser = Parser();
       Expression expressaoFinal = parser.parse(expressao);
       ContextModel contexto = ContextModel();
       double resultado = expressaoFinal.evaluate(EvaluationType.REAL, contexto);
-      String operacao = input;
       String resposta = '\n$operacao = $resultado';
+
       setState(() {
         _historico.insert(0, resposta);
         _controller.text = '';
@@ -94,7 +106,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                 return Text(
                   _historico[index],
                   maxLines: 14,
-                  style: const TextStyle(color: Colors.deepOrangeAccent, fontSize: 19),
+                  style: const TextStyle(
+                      color: Colors.deepOrangeAccent, fontSize: 19),
                 );
               },
             ),
@@ -107,7 +120,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                   textAlign: TextAlign.center,
                   controller: _controller,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(color: Colors.yellowAccent, fontSize: 34, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Colors.yellowAccent,
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -148,8 +164,9 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildButton('-={ Tabular }=-', color: Colors.yellowAccent),
-                    _buildButton('√x', color: Colors.yellowAccent)
+                    _buildButton('{ Tabular }', color: Colors.yellowAccent),
+                    _buildButton('√x', color: Colors.yellowAccent),
+                    _buildButton('%', color: Colors.yellowAccent)
                   ],
                 )
               ],
@@ -174,7 +191,7 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
           _calcularOperacao(_controller.text);
         } else if (text == 'C') {
           _controller.clear();
-        } else if (text == '-={ Tabular }=-') {
+        } else if (text == '{ Tabular }') {
           _calcularTabuada(_controller.text);
         } else if (text == '√x') {
           _calcularRaizQuadrada(_controller.text);
@@ -183,12 +200,29 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         }
       },
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.fromLTRB(34, 7, 34, 7),
+        padding: const EdgeInsets.all(20),
+        backgroundColor: _isSpecialButton(text) ? Colors.yellow : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
       ),
       child: Text(
         text,
         style: const TextStyle(fontSize: 25),
       ),
     );
+  }
+
+  bool _isSpecialButton(String text) {
+    List<String> specialButtons = [
+      'C',
+      '=',
+      '÷',
+      '×',
+      '{ Tabular }',
+      '√x',
+      '-',
+      '+',
+      '%'
+    ];
+    return specialButtons.contains(text);
   }
 }
